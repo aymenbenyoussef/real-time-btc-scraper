@@ -4,9 +4,11 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import time 
 import csv
-
+import os
 
 url = "https://coinmarketcap.com/"
+
+file_path = r"C:\Users\HP\Desktop\Nouveau dossier\python\Data Scraping\Bitcoin_currency.csv"
 
 page = requests.get(url)
 
@@ -24,7 +26,8 @@ columns_header.append("Hour")
 
 df = pd.DataFrame(columns=columns_header)
 
-df.to_csv(r"C:\Users\HP\Desktop\Nouveau dossier\python\Data Scraping\Bitcoin_currency.csv")
+if not os.path.exists(file_path):
+    df.to_csv(file_path)
 
 def Scrap_b():
 
@@ -78,13 +81,12 @@ def Scrap_b():
         df.loc[len(df)] = row_data
     except Exception as e :
         raise e
-    
-    print(row_data)
-    with open(r"C:\Users\HP\Desktop\Nouveau dossier\python\Data Scraping\Bitcoin_currency.csv","a") as f:
+        
+    with open(file_path,"a+",newline="") as f:
         writer = csv.writer(f)
-        row_data.insert(0,len(df))
+        df_2 = pd.read_csv(file_path)
+        row_data.insert(0,len(df_2)+1)
         writer.writerow(row_data)
-
 while(True):
     Scrap_b()
     time.sleep(60)
